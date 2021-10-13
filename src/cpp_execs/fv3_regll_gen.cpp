@@ -1,6 +1,3 @@
-/*
-  This app makes a regular lat-lon grid (llg) in an FV3 internal model format.
-*/
 
 #include <iostream>
 #include <netcdf>
@@ -8,14 +5,22 @@ using namespace std;
 using namespace netCDF;
 using namespace netCDF::exceptions;
 
-//  grid_x  grid_y  grid_xt  grid_yt 
-// grid_lon  grid_lat  grid_lont  grid_latt
+/*
+  This app makes a regular lat-lon grid (llg) in an FV3 internal model format.
+  One output array contains tje the grid cell grid_lon and  grid_lat coordinates ( the cell
+  corner points).  A second output array specifes the grid_lont and grid_latt( cell origins, ot T-cell)
+  They will be dependent on the grid_x , grid_y,  grid_xt and grid_yt axes. 
+  */
 
-// This is the name of the data file we will create. 
+// This is the name of the output data file we will create. 
 #define FILE_NAME "rll.nc"
 
-// We are writing 2D data, a 6 x 12 lat-lon grid. We will need two
-// netCDF dimensions.
+// Define cell origins and model grid sizes
+// TODO: move to program args
+static const float START_LAT = 50.0;
+static const float START_LON  = 0.0;
+static const float START_LATT = 50.5;
+static const float START_LONT =  0.5;
 static const int NDIMS = 2;
 static const int NLATT = 10;
 static const int NLONT = 30;
@@ -36,11 +41,6 @@ string LON_NAME ="grid_x";
 string LATT_NAME = "grid_yt";
 string LONT_NAME ="grid_xt";
 
-
-#define START_LAT       50
-#define START_LON       0
-#define START_LATT      50.5
-#define START_LONT      0.5
 
 // Return this to OS if there is a failure.
 #define NC_ERR 2
