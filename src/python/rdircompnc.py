@@ -1,3 +1,13 @@
+#!/usr/bin/env python3
+
+import os
+import filecmp
+from os import path
+from filecmp import dircmp
+import sys
+import subprocess as sp
+from os import path
+
 #Compare the netcdf files among all corresponding subdirectories of the
 # the two directories using GFDL's (Remiks) nccmp utility
 def comp_with_nccmp_subdirs (d1, d2):
