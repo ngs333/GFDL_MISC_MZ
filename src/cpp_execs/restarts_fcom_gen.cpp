@@ -18,11 +18,17 @@ static const int NDY = 4;  // 4
 static const int NLAT = 24;  // 1350
 static const int NLON = 96;  // 1800
 
+static const int NTILE = 2;  // 1800
 
-void printVariables(ofstream& f, string& fnPre, int fileNum, int nlon, int ndx,  int nlat, int ndy, int is, int ie, int js, int je ){
-  string tw = "  ";
-  string fw = "    ";
-  string ew = "        ";
+
+/**
+ * Print all the info that shoudl appear before the data in the netcdf file.
+ **/
+void printVariables(ofstream& f, string& fnPre, int fileNum, int nlon, int ndx,  int nlat, int ndy, int ntile,
+   int is, int ie, int js, int je ){
+  string tw = "  "; //two whitespaces (blanks)
+  string fw = "    "; //four
+  string ew = "        "; //eight
   string fileName = fnPre + ".nc."  + std::to_string(fileNum);
   const  int nfiles = ndx * ndy;
 
@@ -31,7 +37,8 @@ void printVariables(ofstream& f, string& fnPre, int fileNum, int nlon, int ndx, 
   f << "dimensions:" << endl;
   f << fw << "grid_xt = " << nlon << " ;" << endl;
   f << fw << "grid_yt = " << nlat << " ;" << endl;
-  ;
+  f << fw << "tile = " << ntile << " ;" << endl;
+  
   f << fw << "time = UNLIMITED ; // (1 currently) ;" << endl;
   f << "variables:" << endl;
   f << fw << "double grid_xt(grid_xt) ;" << endl;
@@ -44,13 +51,15 @@ void printVariables(ofstream& f, string& fnPre, int fileNum, int nlon, int ndx, 
   f << ew << "grid_yt:units = \"degrees_N\" ;" << endl;
   f << ew << "grid_yt:axis = \"Y\" ;" << endl;
   f << ew << "grid_yt:domain_decomposition = 1, " << nlat * ndy  << ", " << js << ", " << je << " ;" << endl;
+  f << fw << "int tile(tile) ;" << endl;
+	f << ew << "tile:long_name = \"tile number within grid cell\" ;" << endl;
   f << fw << "double time(time) ;" << endl;
   f << ew << "time:long_name = \"time\" ;" << endl;
   f << ew << "time:units = \"days since 0001-01-01 00:00:00\" ;" << endl;
   f << ew << "time:axis = \"T\" ;" << endl;
   f << ew << "time:calendar_type = \"NOLEAP\" ;" << endl;
   f << ew << "time:calendar = \"noleap\" ;" << endl;
-  f << fw << "float orog(grid_yt, grid_xt)  ;" << endl;
+  f << fw << "float orog(tile, grid_yt, grid_xt)  ;" << endl;
   f << ew << "orog:long_name = \"Surface Altitude\" ;" << endl;
   f << ew << "orog:units = \"m\" ;" << endl;
   f << ew << "orog:missing_value = 1.e+20f  ;" << endl;
@@ -87,14 +96,14 @@ int main(void) {
 
       string fname = fnamePre + ".ncl." + fnamePos;
       string fnameNC = fnamePre + ".nc." + fnamePos;
-      ofstream file(fname, ios::app);
+      ofstream file(fname, ios::app); // the ncl file object!
       file << fixed;
       
       int is = fi * NLON + 1;
       int js = fj * NLAT + 1;
       int ie = is + NLON - 1;
       int je = js + NLAT - 1;
-      printVariables(file, fnamePre, fnum , NLON , NDX,  NLAT , NDY, 
+      printVariables(file, fnamePre, fnum , NLON , NDX,  NLAT , NDY, NTILE,
       is , ie, js, je);
 
       file << "data:" << endl << endl;
@@ -119,26 +128,42 @@ int main(void) {
         }
       }
 
+      file << "tile =" << std::endl;
+      for (size_t k = 1 ; k <= NTILE; k++) {
+        if (k == NTILE) {
+          file << k << " ;" << endl << endl;
+        } else {
+          file << k << ", ";
+          if (k % 20 == 0) file << endl;
+        }
+      }
+
       file << "time = 0 ;" << endl << endl;
 
       file << "orog = ";
-
-      for (size_t j = 1; j <= NLAT; j++) {
-        file << endl;
-        int colCounter = 0;
-        for (size_t i = 1; i <= NLON; i++) {
-          auto ij = (j - 1) * NLON + i;
-          auto num = fnum + 0.000001 * ij;
-          if (ij == 0) {
-            file << num << ", ";
-            colCounter++;
-          } else if (ij == NLAT * NLON) {
-            file << num << " ;" << endl << endl;
-          } else {
-            file << num << ", ";
-            colCounter++;
-            if (colCounter % 10 == 0) {
-              file << endl;
+      for (size_t k = 1; k <= NTILE; k++) {
+        for (size_t j = 1; j <= NLAT; j++) {
+          file << endl;
+          int colCounter = 0;
+          for (size_t i = 1; i <= NLON; i++) {
+            auto ij = (j - 1) * NLON + i;
+            auto num = fnum + 0.000001 * ij;
+            if (ij == 0) {
+              file << num << ", ";
+              colCounter++;
+            } else if (ij == NLAT * NLON) {
+              file << num;
+              if (k == NTILE) {
+                file << " ;" << endl << endl;
+              } else {
+                file << ",";
+              }
+            } else {
+              file << num << ", ";
+              colCounter++;
+              if (colCounter % 10 == 0) {
+                file << endl;
+              }
             }
           }
         }
