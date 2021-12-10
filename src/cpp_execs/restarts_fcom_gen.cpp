@@ -12,13 +12,13 @@ using namespace std;
  */
 
 // The decomposition is into NDX x NDY domains.
-static const int NDX = 1;  // 4
+static const int NDX = 4;  // 4
 static const int NDY = 4;  // 4
 // NLAT, NLO below are per file;; i.e. total latituses are NLAT * DNY, etc
-static const int NLAT = 24;  // 1350
-static const int NLON = 96;  // 1800
+static const int NLAT = 1350;  // 1350
+static const int NLON = 1800;  // 1800
 
-static const int NTILE = 2;  // 1800
+static const int NTILE = 64;  // 1800
 
 
 /**
@@ -96,6 +96,7 @@ int main(void) {
 
       string fname = fnamePre + ".ncl." + fnamePos;
       string fnameNC = fnamePre + ".nc." + fnamePos;
+      cout << "Starting work on cvl file " << fname << endl;
       ofstream file(fname, ios::app); // the ncl file object!
       file << fixed;
       
