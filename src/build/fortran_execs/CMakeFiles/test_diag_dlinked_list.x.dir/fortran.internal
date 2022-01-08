@@ -1,0 +1,3 @@
+# The fortran modules provided by this target.
+provides
+ fms_diag_dlinked_list_mod.mod

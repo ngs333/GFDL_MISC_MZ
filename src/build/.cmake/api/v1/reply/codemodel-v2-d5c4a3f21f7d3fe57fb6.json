@@ -1,0 +1,110 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1,
+						2
+					],
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.18"
+					},
+					"projectIndex" : 0,
+					"source" : "."
+				},
+				{
+					"build" : "cpp_execs",
+					"jsonFile" : "directory-cpp_execs-Debug-cdf69e2a15bad84ac549.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.18"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "cpp_execs",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				},
+				{
+					"build" : "fortran_execs",
+					"jsonFile" : "directory-fortran_execs-Debug-08bb6d9a655b56bdea4a.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.18"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "fortran_execs",
+					"targetIndexes" : 
+					[
+						2
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0,
+						1,
+						2
+					],
+					"name" : "gfdl_misc",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 1,
+					"id" : "fv3_regll_gen.x::@bd1e6b9f9c278afa6c37",
+					"jsonFile" : "target-fv3_regll_gen.x-Debug-ecd6481c6f529ab7d29b.json",
+					"name" : "fv3_regll_gen.x",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "restarts_fcom_gen.x::@bd1e6b9f9c278afa6c37",
+					"jsonFile" : "target-restarts_fcom_gen.x-Debug-6d54cd07e3c925997ce4.json",
+					"name" : "restarts_fcom_gen.x",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "test_diag_dlinked_list.x::@04f8f9ecea426646de0b",
+					"jsonFile" : "target-test_diag_dlinked_list.x-Debug-0736d6782dbcaff2606b.json",
+					"name" : "test_diag_dlinked_list.x",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/mzuniga/gfdl_misc/gfdl_misc/src/build",
+		"source" : "/home/mzuniga/gfdl_misc/gfdl_misc/src"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

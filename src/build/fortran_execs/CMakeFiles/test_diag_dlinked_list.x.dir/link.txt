@@ -1,0 +1,1 @@
+/usr/bin/mpifort -O0 -g -I/usr/include -I/usr/include/hdf5/serial  -ffree-form -fimplicit-none -ffree-line-length-none  -fbounds-check  -g -O0 CMakeFiles/test_diag_dlinked_list.x.dir/test_diag_dlinked_list.F90.o CMakeFiles/test_diag_dlinked_list.x.dir/fms_diag_dlinked_list.F90.o -o /home/mzuniga/gfdl_misc/gfdl_misc/bin/test_diag_dlinked_list.x   -L/home/mzuniga/NetCdCPP/lib 

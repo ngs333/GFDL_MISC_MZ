@@ -11,26 +11,19 @@ include(GNUInstallDirs)
 include_directories(/home/mzuniga/NetCdCPP/include)
 link_directories(/home/mzuniga/NetCdCPP/lib)
 
-# The FMS lib is external to this project.
-# Indicate here where they are.
-include_directories(/home/mzuniga/fms_gfdl/install/include)
-link_directories(/home/mzuniga/fms_gfdl/install/lib)
-
-# The yaml include and lib dirs
-#Below, "/home/mzuniga/dm2/install" is what was called
-# "_your_chosen_install_directory_" in the README.md
-include_directories(/home/mzuniga/dm2/install/yaml/include)
-link_directories(/home/mzuniga/dm2/install/yaml/lib)
-
 
 # Build options
 option(OPENMP    "Build with OpenMP support" ON)
 
-if(CMAKE_Fortran_COMPILER_ID MATCHES "GNU")
-    set(dialect "-ffree-form -std=f2008 -fimplicit-none")
-    set(bounds "-fbounds-check")
+message ("*** CMAKE_Fortran_COMPILER_ID : " ${CMAKE_Fortran_COMPILER_ID})
+
+
+
+if("${CMAKE_Fortran_COMPILER_ID}" MATCHES "GNU")
+    set(dialect "-ffree-form -fimplicit-none -ffree-line-length-none")
+    set(bounds " -fbounds-check ")
 endif()
-if(CMAKE_Fortran_COMPILER_ID MATCHES "Intel")
+if("${CMAKE_Fortran_COMPILER_ID}" MATCHES "Intel")
     set(dialect "-stand f08 -free -implicitnone")
     set(bounds "-check bounds")
 endif()
@@ -39,12 +32,20 @@ IF( NOT CMAKE_BUILD_TYPE )
    SET( CMAKE_BUILD_TYPE Debug )
 ENDIF()
 
-set(CMAKE_Fortran_FLAGS_DEBUG "${CMAKE_Fortran_FLAGS_DEBUG} ${bounds}")
-set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ${dialect}")
+message("*** CMAKE_Fortran_FLAGS : ${CMAKE_Fortran_FLAGS}")
+message("*** CMAKE_Fortran_FLAGS_DEBUG : ${CMAKE_Fortran_FLAGS_DEBUG}")
+message("*** CMAKE_Fortran_FLAGS_RELEASE : ${CMAKE_Fortran_FLAGS_RELEASE}")
+
+set(CMAKE_Fortran_FLAGS_DEBUG " ${dialect} ${bounds} -g -O0")
+set(CMAKE_Fortran_FLAGS_RELASE "${dialect} ${bounds} -g -O2")
 
 set(CMAKE_Fortran_PREPROCESS ON)
 
 message("CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}")
+
+set(moduleDir "${CMAKE_CURRENT_BINARY_DIR}/include")
+set(CMAKE_Fortran_MODULE_DIRECTORY ${moduleDir})
+message("**CMAKE_Fortran_MODULE_DIRECTORY : ${CMAKE_Fortran_MODULE_DIRECTORY}")
 
 
 # MPI Find dependencies
@@ -66,14 +67,14 @@ if (OPENMP)
 endif()
 
 
-set(moduleDir "${CMAKE_CURRENT_BINARY_DIR}/include")
-set(CMAKE_Fortran_MODULE_DIRECTORY ${moduleDir})
+
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/../bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/../bin")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/../bin")
 
 add_subdirectory(cpp_execs)
+add_subdirectory(fortran_execs)
 
 #add_dependencies(fve_regll_gen.x FDS)
 
