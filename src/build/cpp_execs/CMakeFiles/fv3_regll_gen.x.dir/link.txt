@@ -1,1 +1,0 @@
-/usr/bin/mpiCC -g -O0 -g -I/usr/include -I/usr/include/hdf5/serial CMakeFiles/fv3_regll_gen.x.dir/fv3_regll_gen.cpp.o -o /home/mzuniga/gfdl_misc/gfdl_misc/bin/fv3_regll_gen.x   -L/home/mzuniga/NetCdCPP/lib  -Wl,-rpath,/home/mzuniga/NetCdCPP/lib -lnetcdf-cxx4 

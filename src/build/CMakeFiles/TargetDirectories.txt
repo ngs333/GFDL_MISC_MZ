@@ -1,9 +1,0 @@
-/home/mzuniga/gfdl_misc/gfdl_misc/src/build/CMakeFiles/rebuild_cache.dir
-/home/mzuniga/gfdl_misc/gfdl_misc/src/build/CMakeFiles/edit_cache.dir
-/home/mzuniga/gfdl_misc/gfdl_misc/src/build/cpp_execs/CMakeFiles/rebuild_cache.dir
-/home/mzuniga/gfdl_misc/gfdl_misc/src/build/cpp_execs/CMakeFiles/fv3_regll_gen.x.dir
-/home/mzuniga/gfdl_misc/gfdl_misc/src/build/cpp_execs/CMakeFiles/edit_cache.dir
-/home/mzuniga/gfdl_misc/gfdl_misc/src/build/cpp_execs/CMakeFiles/restarts_fcom_gen.x.dir
-/home/mzuniga/gfdl_misc/gfdl_misc/src/build/fortran_execs/CMakeFiles/edit_cache.dir
-/home/mzuniga/gfdl_misc/gfdl_misc/src/build/fortran_execs/CMakeFiles/rebuild_cache.dir
-/home/mzuniga/gfdl_misc/gfdl_misc/src/build/fortran_execs/CMakeFiles/test_diag_dlinked_list.x.dir
