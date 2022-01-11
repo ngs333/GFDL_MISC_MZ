@@ -80,6 +80,7 @@ MODULE fms_diag_dlinked_list_mod
     procedure :: size => get_size
     procedure :: is_empty => is_size_zero
     procedure :: clear => clear_all
+    procedure :: initialize => linked_list_initializer
     final :: destructor
     procedure  :: insert => insert_data
 
@@ -89,9 +90,9 @@ MODULE fms_diag_dlinked_list_mod
     module procedure :: node_constructor
   end interface FmsDlListNode_t
 
-  interface FmsDlList_t
-    module procedure :: linked_list_constructor
-  end interface FmsDlList_t
+ !interface FmsDlList_t
+ !   module procedure :: linked_list_constructor
+ ! end interface FmsDlList_t
 
   interface FmsDllIterator_t
     module procedure :: literator_constructor
@@ -171,10 +172,11 @@ contains
     litr =  this%insert (this%tail, d)
   end function push_at_back
 
+  !!TODO Is node constructor used anywhere?
   !> @brief Constructor for the node_type
   !! @return Returns a nully allocated node.
   function node_constructor () result (nd)
-    type(FmsDlListNode_t), allocatable :: nd  !< The allocated node.
+    type(FmsDlListNode_t), pointer :: nd  !< The allocated node.
     allocate(nd)
     nd%data => null()
     nd%prev => null()
@@ -183,17 +185,27 @@ contains
 
   !> @brief Constructor for the linked list.
   !! @return Returns a newly allocated linked list instance.
+  !! TODO: This function is not used since (observed on Intel compielers) with 
+  !! a finalize keyword on the destructor, when this function returns and ll
+  !! goes out of scope, th allocations in initialized are undome
+  !! whether ot not ll is declared a pointer or allocatable
   function linked_list_constructor () result (ll)
-    type(FmsDlList_t), allocatable :: ll !< The resultant linked list to be reutrned.
+    type(FmsDlList_t), pointer :: ll !< The resultant linked list to be reutrned.
     allocate(ll)
-    allocate(ll%head)
-    allocate(ll%tail)
-    !!print *, 'associated(ll%head) :' , associated(ll%head), &
-    !! ' associated(ll%head) :' , associated(ll%head)
-    ll%head%next => ll%tail
-    ll%tail%prev => ll%head
-    ll%the_size = 0
+    call ll%initialize()
   end function linked_list_constructor
+
+  !> @brief Initializer for the linked list.
+  !! @return Returns a newly allocated linked list instance.
+  subroutine linked_list_initializer( this )
+    class(FmsDlList_t), intent(inout) :: this
+    allocate(this%head)
+    allocate(this%tail)
+    this%head%next => this%tail
+    this%tail%prev => this%head
+    this%the_size = 0
+  end subroutine linked_list_initializer
+
 
   !> @brief The list iterator constructor.
   !! @return Returns a newly allocated list iterator.
@@ -312,6 +324,7 @@ contains
   !>  @brief A destructor that deallocates every node and each nodes data element.
     subroutine destructor(this)
       type(FmsDlList_t) :: this  !<The instance of the type that this function is bound to.
+      print *, "In linked list destructor."
       !! Note in the line above we use "type' and not "class" - needed for destructor definitions.
     call this%clear()
     deallocate(this%head)

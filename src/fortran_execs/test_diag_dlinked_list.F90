@@ -75,7 +75,9 @@ program test_diag_dlinked_list
    full_id_sum = (num_objs * (num_objs + 1)) / 2
 
    !!Create the list
-   list = FmsDlList_t()
+   !!list = FmsDlList_t()
+   allocate(list)
+   call list%initialize()
 
    if( list%size() /= 0) then
       test_passed = .false.
@@ -110,10 +112,115 @@ program test_diag_dlinked_list
       call error_mesg_mine("test_diag_linked_list", "List has incorrect size after inserts.",FATAL)
    endif
 
+
+!! Test iteration over the entire list :
+   sum = 0
+   sum = sum_ids_in_list ( list )
+
+   if( sum  /=  full_id_sum) then
+      test_passed = .false.
+      call  error_mesg_mine("test_diag_linked_list", "Id sums via iteration over the list objects is not as expected",FATAL)
+   endif
+
+   if( list%size() /= num_objs) then
+      test_passed = .false.
+      call  error_mesg_mine("test_diag_linked_list", "The list size is not as expected post inserts.",FATAL)
+   endif
+
+   !! Test a removal from the back (id should be num_objs)
+   p_obj => find_back_of_list( list)
+   iter = list%pop_back()
+   !! Note the client is resposible for managing memory of anything he explicitly
+   !! removes from the list:
+   deallocate(p_obj)
+   sum = sum_ids_in_list ( list )
+   if( sum  /=  full_id_sum - num_objs ) then
+      test_passed = .false.
+      call  error_mesg_mine("test_diag_linked_list", "Id sums via iteration over the list objects is not as expected",FATAL)
+   endif
+
+   !! Repeat - test removal from the back of list (should be (num_objs -1)).
+   p_obj => find_back_of_list( list)
+   iter = list%pop_back()
+   !! Note the client is resposible for managing memory of anything he explicitly
+   !! removes from the list:
+   deallocate(p_obj)
+   sum = sum_ids_in_list ( list )
+   if( sum  /=  (full_id_sum - num_objs - (num_objs -1) )) then
+      test_passed = .false.
+      call  error_mesg_mine("test_diag_linked_list", "Id sums via iteration over the list objects is not as expected",FATAL)
+   endif
+
+   call list%clear()
+   if( list%size() /= 0) then
+      test_passed = .false.
+      call  error_mesg_mine("test_diag_linked_list", "List is incorrect size after clearing.",FATAL)
+   endif
+
+   write (6,*) "Finishing diag_dlinked_list tests."
+
+   !! the list has a finalize/destructor which will deallocate data that is still in the list.
+   !! equivalent to calling list%clear() as above.
+   deallocate(list)
+
    call error_mesg_mine("test_diag_linked_list", "Finished tests",NOTE)
-   
 
  CONTAINS
+
+ !> @brief Cast the "class(*) input data to the expected type.
+ function  get_typed_data( data_in  ) result( rdo )
+   class(*), intent(in), pointer :: data_in !< An input pointer to the class(*) object.
+   class(TestDummy_t),  pointer :: rdo !< The resultant pointer to the expected underlying object type.
+   rdo => null()
+
+   select type(data_in)
+    type is (TestDummy_t)  !! "type is", not the (polymorphic) "class is"
+      rdo => data_in
+    class default
+      call  error_mesg_mine("test_diag_linked_list","Data to access is not of expected type.",FATAL)
+   end select
+end function get_typed_data
+
+!> Calcualte the sum of the ids.
+!! Exercises iteration over the list.
+function sum_ids_in_list (list) result (rsum)
+   type (FmsDlList_t), allocatable :: list !< The linked list instance
+   integer  :: rsum                        !< The resultant sum of ids
+   class(FmsDllIterator_t), allocatable :: iter !< An iterator over the list
+   type (TestDummy_t), pointer::   p_td_obj     !< A pointer to a test_dummy object
+   class(*), pointer :: p_obj                   !< A pointer to a class(*) object
+   integer :: ic_status                         !< A list insertion status.
+   !!
+   rsum = 0
+   iter = list%get_literator()
+   do while( iter%has_data() .eqv. .true.)
+      p_obj => iter%get()
+      p_td_obj => get_typed_data (p_obj )
+      id =  p_td_obj%id
+      rsum = rsum + id
+      ic_status = iter%next()
+   end do
+end function sum_ids_in_list
+
+!> Calcualate the sum of the ids. This also is a kind of search function,
+!! so if the provided wrapper is not used, you have to write your own.
+!! @return a pointer the object at the end of the list, or null if none
+function find_back_of_list (list) result (p_rdo)
+ type (FmsDlList_t), allocatable :: list !< The linked list instance
+ class(TestDummy_t),  pointer :: p_rdo !< The resultant back of list,
+ class(FmsDllIterator_t), allocatable :: iter !< An iterator over the list
+ class(*), pointer :: p_obj                   !< A pointer to a class(*) object
+ integer :: ic_status                         !< A list insertion status.
+ !!
+ p_rdo => null()
+ iter = list%get_literator()
+ do while( iter%has_data() .eqv. .true.)
+    p_obj => iter%get()
+    p_rdo => get_typed_data (p_obj )
+    ic_status = iter%next()
+ end do
+end function find_back_of_list
+
 
    subroutine error_mesg_mine(ma, mb , stat)
       character(*),  intent (in) :: ma
