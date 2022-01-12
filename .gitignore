@@ -12,6 +12,7 @@
 /src/out/
 # MZ ignore everything under the bin directory of the repository root
 /bin/
+bin
 
 # User-specific files
 *.suo
@@ -82,6 +83,9 @@ artifacts/
 *.pidb
 *.svclog
 *.scc
+
+*.mod
+*.x
 
 # Chutzpah Test files
 _Chutzpah*
