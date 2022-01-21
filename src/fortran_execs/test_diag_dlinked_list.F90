@@ -150,7 +150,8 @@ program test_diag_dlinked_list
    endif
 
    !! Renove (and deallocate) the data nodes and assocaited data
-   !! of the list.
+   !! of the list. Note that list.clear() is called by the destructor
+   !! anyways. We use it here just to test.
    call list%clear()
    if( list%size() /= 0) then
       test_passed = .false.
@@ -162,7 +163,7 @@ program test_diag_dlinked_list
    call error_mesg('test_diag_dlinked_list', 'Test has finished',NOTE)
 
    !! An allocated list must be deallocated to have the two sentinel nodes deleted.
-   !deallocate(list)
+   deallocate(list)
 
 CONTAINS
 

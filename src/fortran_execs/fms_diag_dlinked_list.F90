@@ -289,29 +289,36 @@ contains
       pn  => this%current
    end function get_current_node_ptr
 
-   !> @brief Iterate over all the nodes, remove them and deallocate the client data
-   !! associated wiith the nodes.
-   subroutine clear_all( this  )
-
+   !> @brief Iterate over all the nodes, remove them. Also deallocates the client data
+   !! associated wiith the nodes 
+   subroutine clear_all( this, data_dealloc_flag)
       class(FmsDlList_t), intent(inout) :: this !<The instance of the class that this function is bound to.
-      type(FmsDlListNode_t), pointer :: nd              !< A pointer to linked list node.
-      class(FmsDllIterator_t), allocatable :: iter      !< A linked list iterator.
-      class(*),  pointer  :: pdata                      !< A pointer to the data.
+      logical, optional, intent(in) :: data_dealloc_flag    !< If not present or .true., client data is deallocated.
+      type(FmsDlListNode_t), pointer :: nd           !< A pointer to linked list node.
+      class(FmsDllIterator_t), allocatable :: iter   !< A linked list iterator.
+      class(*),  pointer  :: pdata =>null()          !< A pointer to the data.
+      logical :: data_dealloc_f    !< Set to data_dealloc_flag if present, otherwise its .true.
       !
-      print *, "Entering cllear all"
+      print *, "Entering clear all"
+      data_dealloc_f = .true. 
+      if( PRESENT(data_dealloc_flag) ) then 
+         data_dealloc_f = data_dealloc_flag 
+      endif
       do while( this% the_size /= 0)
          nd => this%head%next
          pdata => nd%data
-         if (associated(pdata) .eqv. .false.) then
-            call  error_mesg ('fms_diag_dlinked_list', &
-               'In clear_all; linked node contains node with unassociated data pointer', &
-               WARNING)
-         else
-          deallocate(pdata)
-          iter =  this%remove(nd)
+         iter =  this%remove(nd)
+         if(data_dealloc_f == .true.) then
+            if (associated(pdata) .eqv. .false.) then
+               call  error_mesg ('fms_diag_dlinked_list', &
+                  'In clear_all; linked node contains node with unassociated data pointer', &
+                  WARNING)
+            else
+               deallocate(pdata)
+            endif
          endif
       end do
-      print *, "Exiting cllear all"
+      print *, "Exiting clear all"
    end subroutine clear_all
 
    !>  @brief A destructor that deallocates every node and each nodes data element.
