@@ -103,8 +103,10 @@ if __name__ == '__main__':
     #verts1 = read_polys_3d_xg('/home/mzuniga/fre_polyarea/polys/axo3_polys.txt')
     #verts2 = read_polys_3d_xg('/home/mzuniga/fre_polyarea/polys/polys3c.txt')
 
-    verts1, verts2, verts3 = read_polys_3d_xg('/home/mzuniga/fre_polyarea/polys/axo4_2.txt')
-    ##verts1, verts2, verts3 = read_polys_3d_xg('/home/mzuniga/fre_polyarea/polys/poly3d_good1.txt')
+    #verts1, verts2, verts3 = read_polys_3d_xg('/home/mzuniga/fre_polyarea/polys/axo4_2.txt')
+    #verts1, verts2, verts3 = read_polys_3d_xg('/home/mzuniga/fre_polyarea/polys/poly3d_good1.txt')
+    #verts1, verts2, verts3 = read_polys_3d_xg('/home/mzuniga/fre_polyarea/polys/lxo_1.txt')
+    verts1, verts2, verts3 = read_polys_3d_xg('/home/mzuniga/fre_polyarea/polys/axo5.4.txt')
 
     verts123 = np.concatenate((verts1, verts2) ,1)
     verts123 = np.concatenate((verts123, verts3),1)
@@ -120,16 +122,15 @@ if __name__ == '__main__':
 
     # repeat for second set 
     coll2 = Poly3DCollection(verts2)
-    face_color2 = [0, 1.0, 0, 2 * alpha]  #yellow
+    face_color2 = [0, 1.0, 0, 2 * alpha]  #green
     coll2.set_facecolor(face_color2)
     plt.gca().add_collection3d(coll2)
 
      # repeat for 3rd set 
     coll3 = Poly3DCollection(verts3, linewidth=2.0,linestyle="--", edgecolors="black")
-    face_color3 = [0.0, 0.0, 1.0, alpha]
+    face_color3 = [0.0, 0.0, 1.0, alpha] #blue;
     coll3.set_facecolor(face_color3)
     plt.gca().add_collection3d(coll3)
-
 
 
     #coll3 = Line3DCollection(verts3, colors='k', linewidths=5.0, linestyles=':')
@@ -143,7 +144,7 @@ if __name__ == '__main__':
     #ax.set_zlim(-1, 1)
     #ax.set_xlim(-0.05, 0.05)
     #ax.set_ylim(-0.05, 0.06)
-    ax.set_zlim(-1, 1)
+    ax.set_zlim( -1,1)
     
     plt.show()
 
