@@ -1,12 +1,14 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import filecmp
 from os import path
 from filecmp import dircmp
+import string
 import sys
 import subprocess as sp
 from os import path
+import argparse
 
 
 #Compare two directories using the python filecpm.dircmp facility
@@ -67,11 +69,32 @@ def comp_with_nccmp (d1, d2):
     print("-----------------------------")
 
 
+#Compare the netcdf files among all corresponding subdirectories of the
+# the two directories using GFDL's (Remiks) nccmp utility
+def comp_with_nccmp_subdirs (d1, d2):
+    subdirs =  [f.name for f in os.scandir(d1) if f.is_dir()]
+    print("Subdirectories to compare:")
+    for element in subdirs:
+        print (element)
+
+    print("-----------------------------")
+    global files_failed
+    global files_compared
+    files_failed = 0
+    files_compared = 0
+    for element in subdirs:
+        comp_with_nccmp(d1 + '/' + element, d2 + '/' + element)
+
+    print("[total files compared, total files differing]: [" + str(files_compared) + ", " + str(files_failed) +"]")
+
 if __name__ == '__main__':
 
-    if (len(sys.argv) != 3):
-        print('Usage: dircompnc.py director1 directory 2')
-        sys.exit(-1)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('dirA', type=str, help="The first directory")
+    parser.add_argument('dirB', type=str, help="The second directory")
+    parser.add_argument('--s', action='store_true', help="compare within all corresponding subdirecotries")
+    parser.add_argument('--f', action='store_true', help="Also compare with file atts")
+    args = parser.parse_args()
 
     dirA = sys.argv[1]
     dirB = sys.argv[2]
@@ -90,7 +113,11 @@ if __name__ == '__main__':
         print(dirB, 'is not a directory. ... bye ...')
         sys.exit(-1)
 
-    comp_with_fatts(dirA, dirB)
+    if args.f :
+        comp_with_fatts(dirA, dirB)
+    if args.s :
+        comp_with_nccmp_subdirs(dirA, dirB)
+    else :
+        comp_with_nccmp(dirA, dirB)
 
-    comp_with_nccmp(dirA, dirB)
     print("All comparisons fininshed")
