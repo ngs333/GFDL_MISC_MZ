@@ -6,10 +6,9 @@ project(gfdl_misc
 
 include(GNUInstallDirs)
 
-# The FMS lib is external to this project.
-# Indicate here where they are.
-include_directories(/home/mzuniga/NetCdCPP/include)
-link_directories(/home/mzuniga/NetCdCPP/lib)
+#Location of some libs is external to this project.
+include_directories(/home/mzuniga/NetCdCPP/install/include)
+link_directories(/home/mzuniga/NetCdCPP/install/lib)
 
 
 # Build options
@@ -53,6 +52,7 @@ message("**CMAKE_Fortran_MODULE_DIRECTORY : ${CMAKE_Fortran_MODULE_DIRECTORY}")
 find_package(MPI REQUIRED)
 include_directories(${MPI_Fortran_INCLUDE_PATH})
 link_directories(${MPI_Fortran_LIBRARIES})
+include_directories(${moduleDir})
 
 #include_directories(${MPI_INCLUDE_PATH})
 #link_directories(${MPI_LIBRARY_DIRS})

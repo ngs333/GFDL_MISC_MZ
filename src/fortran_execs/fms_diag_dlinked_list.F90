@@ -308,7 +308,7 @@ contains
          nd => this%head%next
          pdata => nd%data
          iter =  this%remove(nd)
-         if(data_dealloc_f == .true.) then
+         if(data_dealloc_f .eqv. .true.) then
             if (associated(pdata) .eqv. .false.) then
                call  error_mesg ('fms_diag_dlinked_list', &
                   'In clear_all; linked node contains node with unassociated data pointer', &
