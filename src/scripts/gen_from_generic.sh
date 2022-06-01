@@ -1,6 +1,7 @@
 #!/bin/bash
 
 
+
 # Function replace_text_list makes a copy of the contents of
 # file source, replaces all occurences of the test in ARRAY
 # itext with the corresponding ones in ARRAY otext, and writes
@@ -35,6 +36,9 @@ function replace_text_list {
         echo "$line" >> $target
     done < "$source"
 }
+
+#Program to generate the send_data_[r|i]_mod.F90 files from
+# a template.
 
 #This below is just an example usage
 #copy the template to this dir

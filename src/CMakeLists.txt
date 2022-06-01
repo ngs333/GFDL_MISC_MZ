@@ -67,10 +67,10 @@ if (OPENMP)
 endif()
 
 #compile and install the fortran modules
-file( GLOB fortran_mod_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/fortran_execs/*_mod.F90 )
-add_library( gfdl_misc STATIC ${fortran_mod_SOURCES} )
-install( TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/Lib/ )
-install(DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY} DESTINATION ${CMAKE_CURRENT_SOURCE_DIR})
+#file( GLOB fortran_mod_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/fortran_execs/*_mod.F90 )
+#add_library( gfdl_misc STATIC ${fortran_mod_SOURCES} )
+#install( TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/Lib/ )
+#install(DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY} DESTINATION ${CMAKE_CURRENT_SOURCE_DIR})
 
 
 

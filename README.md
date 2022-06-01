@@ -1,4 +1,3 @@
-# diag_manager2
 This is a miscellaneous collection of custom code related to GFDL work
 by mzuniga which did not quite fit under repos NCTools, FMS, etc.
 
@@ -16,13 +15,18 @@ link_directories(/home/mzuniga/NetCdCPP/lib)
 Libray sources are here:
 https://github.com/Unidata/netcdf-cxx4
 
-III) then you can build with 
+III) Other sources
+some apps (e.g. test_send_data.x) use source files that are generated
+froma template. Currently program gen_from_generic.sh is run manually and
+the generated files are manually copied to the proper src directory.
+
+IV) then you can build with 
 $ cd gfdl_misc
 $ mkdir build; cd build
 $ cmake -G Ninja .. 
 $ ninja -v
 
-the executables are place in directory "bin" at the same level as
+the executables are placed in directory "bin" at the same level as
 the main src direcotry.
 
 VSCode compile:

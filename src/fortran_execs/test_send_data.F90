@@ -1,49 +1,73 @@
+!! test_send_data is merely for testing the send_data interface prototype,
+!! particularly for using class(*) data arguments and alternatives.
+
 program test_send_data
 
-   use send_data_mod
+   use send_data_mod, only : send_data
+   !!note we do not directly need to use the send_data_r_mod
+   !! or the send_data_i_mod
 
    implicit none
 
    integer i
-   real, allocatable,  dimension(:) :: rxr,ryr,rzr
-   class(*), allocatable,  dimension(:) :: xr,yr,zr
-   class(*), allocatable, dimension(:) :: xi,yi,zi
 
-   allocate( rxr(5))
-   allocate( ryr(5))
-   allocate( rzr(5))
-   allocate(real :: xr(5))
-   allocate(real :: yr(5))
-   allocate(real :: zr(5))
-   allocate(integer :: xi(5))
-   allocate(integer :: yi(5))
-   allocate(integer :: zi(5))
+   !!There are three types of data:
+   class(*), allocatable,  dimension(:) :: xrc,yrc,zrc
+   class(*), allocatable, dimension(:) :: xic,yic,zic
+   real, allocatable,  dimension(:) :: xr,yr,zr
+   integer, allocatable, dimension(:) :: xi,yi,zi
 
+   allocate(real :: xrc(5))
+   allocate(real :: yrc(5))
+   allocate(real :: zrc(5))
+   allocate(integer :: xic(5))
+   allocate(integer :: yic(5))
+   allocate(integer :: zic(5))
 
-   call initialize_data(xr, yr, zr, xi, yi, zi, rzr )
+   allocate(xr(5))
+   allocate(yr(5))
+   allocate(zr(5))
+   allocate(xi(5))
+   allocate(yi(5))
+   allocate(zi(5))
 
-   ! call send_dat(rxr,ryr,rzr)
-   !Error: Actual argument to ‘x’ at (1) must be polymorphic
+   call initialize_data_C(xrc, yrc, zrc, xic, yic, zic)
+   call initialize_data(xr, yr, zr, xi, yi, zi)
+
+   !! Using some interfaces are OK but some (in comments below)
+   !!  will not (and should not) compile. Note that although in 
+   !!   principle we can move send_data_cs to a module 
+   !!   the send_data_i and send_data_r, but the same generation
+   !!  script will not work.
+
+   print *, "using send_data with xr:"
    call send_data(xr,yr,zr)
+
+   print *, "using send_data with xi:"
    call send_data(xi,yi,zi)
-   call send_data_cs(xr,yr,zr)
-   call send_data_cs(xi,yi,zi)
-   
 
-   rzr = rzr ** 2
-   !!zr = zr ** 2
-   !!Error: Operands of binary numeric operator ‘**’ at (1) are CLASS(*)/INTEGER(4)
+   !!call send_data_cs(xr,yr,zr)
+   !Error: Actual argument to ‘x’ at (1) must be polymorphic
 
-   select type (zr)
-   type is ( REAL )
-     do i = 1,5
-        print *, zr(i)
-     end do
-  end select
+   print *, "using send_data_cs with xrc"
+   call send_data_cs(xrc,yrc,zrc)
+
+   print *, "using send_data_cs with xic"
+   call send_data_cs(xic,yic,zic)
+
+   select type (zrc)
+    type is ( REAL )
+      do i = 1,5
+         print *, zrc(i)
+      end do
+   end select
+
+   call check_power_function(zi, zr, zrc)
 
 CONTAINS
 
-
+   !!send_data with class(*) args. Its a wrapper to the other
+!! sned_data functions.
    subroutine send_data_cs (x, y, z)
       CLASS(*), allocatable , dimension(:), intent(in) :: x,y
       CLASS(*), allocatable , dimension(:), intent(inout) :: z
@@ -53,25 +77,28 @@ CONTAINS
           type is (REAL)
             select type (z)
              type is (REAL)
-               print *, "calling real sd"
-               call send_dat_r(x,y,z)
-               !Error: Actual argument for ‘x’ must be ALLOCATABLE at (1)
+               call send_data(x,y,z)
+               !!call send_dat_r(x,y,z) !!OR can  _R version if its visible.
             end select
          end select
-
        type is (INTEGER)
-         print*, "calling int sd"
-         !CALL send_dat_i(x,y,z)
+         select type (y)
+          type is (INTEGER)
+            select type(z)
+             type is (INTEGER)
+               call send_data(x,y,z)
+               !!call send_dat_r(x,y,z) !!OR can  _I version if its visible.
+            end select
+         end select
        class default
          stop 'Error in send_dat type selection '
       end select
 
-      PRINT *, "returning from send_dat"
+      PRINT *, "returning from send_data_cs"
    end subroutine send_data_cs
 
 
-   subroutine initialize_data(xr, yr, zr, xi, yi, zi, rzr )
-      real, intent(inout), allocatable,  dimension(:) :: rzr
+   subroutine initialize_data_c(xr, yr, zr, xi, yi, zi )
       class(*), intent(inout), allocatable,  dimension(:) :: xr,yr,zr
       class(*), intent(inout), allocatable, dimension(:) :: xi,yi,zi
 
@@ -107,6 +134,43 @@ CONTAINS
        type is ( INTEGER )
          xi = 1
       end select
+   end subroutine initialize_data_c
+
+   subroutine initialize_data(xr, yr, zr, xi, yi, zi )
+      real, intent(inout), allocatable,  dimension(:) :: xr,yr,zr
+      integer, intent(inout), allocatable, dimension(:) :: xi,yi,zi
+
+      zr = 1
+      zr = zr ** 2
+      yr = 1
+      xr = 1
+      zi = 1
+      yi = 1
+      xi = 1
+
    end subroutine initialize_data
+
+   subroutine check_power_function(zi, zr, zrc)
+      integer,  dimension(:), intent(inout) ::zi
+      real,     dimension(:), intent(inout) ::zr
+      class(*), dimension(:), intent(inout) ::zrc
+
+   !!POWER operator works with reals, ints, BUT NOT CLASS(*)
+   ZR = 1
+   zr = zr ** 2  !!POWER operator works with reals, ints, 
+   zr = 1
+   zi = 1
+   zi = zi ** 2
+   zi = 1
+
+   !!zrc = zrc ** 2 
+   !!Error: Operands of binary numeric operator ‘**’ at (1) are CLASS(*)/INTEGER(4)
+
+   select type (zrc)
+   type is ( REAL )
+      ZRC = ZRC ** 2
+  end select
+
+end subroutine check_power_function
 
 end program test_send_data
