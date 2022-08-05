@@ -23,6 +23,7 @@ PROGRAM  test_elemental_weighting_procs
    ALLOCATE(mask(SZ,SZ,SZ))
    field  = 1.0
    ofb(:,:,:,1) = 0.0
+   ofb2(:,:,:,1) = 0.0
    mask = .true.
    mask(1:SZ:2,:,:) = .false. !!even rows are .false.
    is = 1
@@ -55,6 +56,21 @@ CONTAINS
       buff = buff + (field * weight) ** pow_value
    END SUBROUTINE weight_the_elem
 
+   ELEMENTAL SUBROUTINE weight_the_elem_wm( buff, field, mask, weight, pow_value, missvalue )
+      REAL, INTENT(INOUT) :: buff
+      REAL, INTENT(IN) :: field
+      LOGICAL, INTENT(IN) :: mask
+      REAL, INTENT(IN) :: weight
+      INTEGER, INTENT(IN) :: pow_value
+      REAL, INTENT(IN) :: missvalue
+
+      if (mask .eqv. .true.) THEN
+         buff = buff + (field * weight) ** pow_value
+      ELSE
+         buff = missvalue
+      END IF
+   END SUBROUTINE weight_the_elem_wm
+
    SUBROUTINE AVERAGE_THE_FIELD(field, ofb, ofb2, mask, weight1, pow_value, &
    & l_start, l_end, is, js, ks, ie, ke, je, &
    & hi, hj, f1, f2, f3, f4)
@@ -77,21 +93,74 @@ CONTAINS
 
       REAL :: itemp = 2
 
+      !!CASE 1 - original loop :
       ksr= l_start(3)
       ker= l_end(3)
       ofb(is-hi:ie-hi,js-hj:je-hj,:,sample) =  ofb(is-hi:ie-hi,js-hj:je-hj,:,sample) + &
       & (field(f1:f2,f3:f4,ksr:ker) * weight1) ** pow_value
 
+      !!CASE 1 - using elemental procedure :
       call weight_the_elem(ofb2(is-hi:ie-hi,js-hj:je-hj,:,sample), &
-         field(f1:f2,f3:f4,ksr:ker), weight1, pow_value)
+         & field(f1:f2,f3:f4,ksr:ker), weight1, pow_value)
 
       IF (ALL (ofb /= ofb2)) THEN
-         print *, "ERROR: ofb /= ofb2"
+         print *, "ERROR: ofb /= ofb2 CASE1"
       ELSE
-         print *, "OK: ofb == ofb2"
+         print *, "OK: ofb == ofb2 in CASE1"
       END IF
 
-      write(0,"('atmosphere_init: current_time_seconds = ',f9.1)")itemp
+      ofb2(:,:,:,1) = 0.0
+      !! CASE 2 - original loop :
+      DO k=ks, ke
+         DO j=js, je
+            DO i=is, ie
+               IF ( mask(i-is+1+hi,j-js+1+hj,k) ) THEN
+                  ofb(i-hi,j-hj,k,sample) = ofb(i-hi,j-hj,k,sample) + &
+                  & ( field(i-is+1+hi,j-js+1+hj,k) * weight1) ** pow_value
+               ELSE
+                  ofb(i-hi,j-hj,k,sample)= missvalue
+               END IF
+            END DO
+         END DO
+      END DO
+
+      ofb2(:,:,:,1) = 0.0
+      !! CASE 2.A - using elemental procedure :
+      DO k=ks, ke
+         DO j=js, je
+            DO i=is, ie
+               IF ( mask(i-is+1+hi,j-js+1+hj,k) ) THEN
+                  call weight_the_elem(ofb(i-hi,j-hj,k,sample), &
+                  & field(i-is+1+hi,j-js+1+hj,k), weight1, pow_value)
+               ELSE
+                  ofb(i-hi,j-hj,k,sample)= missvalue
+               END IF
+            END DO
+         END DO
+      END DO
+      IF (ALL (ofb /= ofb2)) THEN
+         print *, "ERROR: ofb /= ofb2 CASE2.A"
+      ELSE
+         print *, "OK: ofb == ofb2 in CASE2.A"
+      END IF
+
+      ofb2(:,:,:,1) = 0.0
+      !! CASE 2.B - using elemental procedure with mask - shorter version B :
+         DO j=js, je
+            DO i=is, ie
+                  call weight_the_elem_wm(ofb(i-hi,j-hj,:,sample), &
+                  & field(i-is+1+hi,j-js+1+hj,:), mask(i-is+1+hi,j-js+1+hj,:),  &
+                  & weight1, pow_value, missvalue)
+            END DO
+         END DO
+      IF (ALL (ofb /= ofb2)) THEN
+         print *, "ERROR: ofb /= ofb2 CASE2.B"
+      ELSE
+         print *, "OK: ofb == ofb2 in CASE2.B"
+      END IF
+
+       !! CASE 2.C - using elemental procedure - even shorter version C :
+
       
 
       RETURN
