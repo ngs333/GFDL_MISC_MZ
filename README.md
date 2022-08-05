@@ -18,7 +18,7 @@ https://github.com/Unidata/netcdf-cxx4
 III) Other sources
 some apps (e.g. test_send_data.x) use source files that are generated
 froma template. Currently program gen_from_generic.sh is run manually and
-the generated files are manually copied to the proper src directory.
+the generated files are manually copied to the proper src directory!!
 
 IV) then you can build with 
 $ cd gfdl_misc
@@ -34,7 +34,7 @@ These extensions are recommended (circa 2021)
 a) C/C++ for Visual Studio Code (by Microsoft)
 b) C/C++ Extension Pack (Microsoft)
 c) C/C++ Themes (By Microsoft)
-d) Modern Fortran (Miguel Carvajal)
+d) Modern Fortran ( from frotran-lang)
 e) Fortran IntelliSense (Chris Hansen)
 f) Fortran Breakpoint Support (ekibun)
 g) EditorConfig for VS Code (EditorConfig)
