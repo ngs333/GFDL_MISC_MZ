@@ -17,6 +17,8 @@ program test_send_data
    real, allocatable,  dimension(:) :: xr,yr,zr
    integer, allocatable, dimension(:) :: xi,yi,zi
 
+   real, dimension(:) :: xr_stk(5),yr_stk(5),zr_stk(5)
+
    allocate(real :: xrc(5))
    allocate(real :: yrc(5))
    allocate(real :: zrc(5))
@@ -46,8 +48,13 @@ program test_send_data
    print *, "using send_data with xi:"
    call send_data(xi,yi,zi)
 
-   !!call send_data_cs(xr,yr,zr)
-   !Error: Actual argument to ‘x’ at (1) must be polymorphic
+   !! call send_data_cs(xr,yr,zr) Note does not compile
+   !! ICC error # 8300, So removed allocatable from dummy declaration
+   !! in procedure send_data_cs_dna
+
+   call send_data_cs_dna(xr,yr,zr) !!dna means dummy not allocatable
+
+   call send_data_cs_dna(xr_stk,yr_stk,zr_stk)
 
    print *, "using send_data_cs with xrc"
    call send_data_cs(xrc,yrc,zrc)
@@ -96,6 +103,37 @@ CONTAINS
 
       PRINT *, "returning from send_data_cs"
    end subroutine send_data_cs
+
+   !!send_data with class(*) args, and some args are not declared allotatable
+   !! dna mean dummy not allocatable.
+   subroutine send_data_cs_dna (x, y, z)  !
+      CLASS(*), dimension(:), intent(in) :: x,y !!NOTE x,y not declared allocatable
+      CLASS(*), dimension(:), intent(inout) :: z
+      select type (x)
+       type is ( REAL )
+         select type (y)
+          type is (REAL)
+            select type (z)
+             type is (REAL)
+               call send_data(x,y,z)
+               !!call send_dat_r(x,y,z) !!OR can  _R version if its visible.
+            end select
+         end select
+       type is (INTEGER)
+         select type (y)
+          type is (INTEGER)
+            select type(z)
+             type is (INTEGER)
+               call send_data(x,y,z)
+               !!call send_dat_r(x,y,z) !!OR can  _I version if its visible.
+            end select
+         end select
+       class default
+         stop 'Error in send_dat type selection '
+      end select
+
+      PRINT *, "returning from send_data_cs"
+   end subroutine send_data_cs_dna
 
 
    subroutine initialize_data_c(xr, yr, zr, xi, yi, zi )

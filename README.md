@@ -2,7 +2,7 @@ This is a miscellaneous collection of custom code related to GFDL work
 by mzuniga which did not quite fit under repos NCTools, FMS, etc.
 
 Build and install general info:
-I) This version was tested with Cmake - with Ninja and the default generator.
+I) This version was tested with Cmake 
 
 II) External Libs required:
 
@@ -16,17 +16,37 @@ Libray sources are here:
 https://github.com/Unidata/netcdf-cxx4
 
 III) Other sources
-some apps (e.g. test_send_data.x) use source files that are generated
-froma template. Currently program gen_from_generic.sh is run manually and
+Some apps (e.g. test_send_data.x) use source files that are generated
+from  template. Currently program gen_from_generic.sh is run manually and
 the generated files are manually copied to the proper src directory!!
 
-IV) then you can build with 
-$ cd gfdl_misc
+IV) Compiling
+Besides the step above for file generation. Set the FC and CC env varialbles. E.g.
+in bash with the Intel toolchain:
+
+export FC=mpiifort
+export CC=mpiicc
+
+or similarly for GCC:
+
+export FC=mpifort
+export CC=mpicc
+
+you can then build with 
+$ cd gfdl_misc/src
 $ mkdir build; cd build
 $ cmake -G Ninja .. 
 $ ninja -v
 
-the executables are placed in directory "bin" at the same level as
+or, for example, using the default generator with verbose compilation in debug mode:
+
+$ cd gfdl_misc/src
+$ mkdir build; cd build
+$ cmake .. -DCMAKE_BUILD_TYPE=Debug
+$ cmake --build . -v
+
+
+Note the executables are placed in directory "bin" at the same level as
 the main src direcotry.
 
 VSCode compile:
