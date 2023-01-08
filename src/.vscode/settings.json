@@ -1,0 +1,7 @@
+{
+    "cmake.configureOnOpen": false,
+    "files.associations": {
+        "*.fh": "FortranFreeForm",
+        "pass_array.C": "cpp"
+    }
+}
