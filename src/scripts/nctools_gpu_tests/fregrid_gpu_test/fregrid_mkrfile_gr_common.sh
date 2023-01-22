@@ -1,2 +1,2 @@
-source fregrid_mkrfile_gr.sh 768 90 180
+source fregrid_mkrfile_gr.sh 768 180 360
 

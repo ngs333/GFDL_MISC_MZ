@@ -1,3 +1,3 @@
-source fregrid_mkrfile_gg 192 48
-source fregrid_mkrfile_gg 768 192
-source fregrid_mkrfile_gg 3072 768
+source fregrid_mkrfile_gg.sh 192 48
+source fregrid_mkrfile_gg.sh 768 192
+source fregrid_mkrfile_gg.sh 3072 768

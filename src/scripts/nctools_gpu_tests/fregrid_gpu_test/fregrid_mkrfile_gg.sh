@@ -10,7 +10,7 @@ echo "source/input mosaic size:" $SGS
 echo "target/output mosaic size:" $TGS
 
 MS=$(get_gec_mosaic_name $SGS)
-MT=$(get_gec_mosaic_name $SGS)
+MT=$(get_gec_mosaic_name $TGS)
 
 RFN="remap_C"$SGS"_C"$TGS".nc"
 

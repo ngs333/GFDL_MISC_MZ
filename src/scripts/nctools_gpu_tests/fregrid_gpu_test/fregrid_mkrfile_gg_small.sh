@@ -1,1 +1,1 @@
-source fregrid_mkrfile_gg 192 48
+source fregrid_mkrfile_gg.sh 48 192
