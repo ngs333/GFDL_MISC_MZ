@@ -23,5 +23,14 @@ get_rll_mosaic_name(){
     result="R"$slat"x"$slon"_mosaic"
     echo $result
 }
+get_tripolar_grid_name(){
+    result="TP"$1"_grid"
+    echo $result
+}
+get_tripolar_mosaic_name(){
+    result="TP"$1"_mosaic"
+    echo $result
+}
+
 
 #make similar functions for tridiagonals
