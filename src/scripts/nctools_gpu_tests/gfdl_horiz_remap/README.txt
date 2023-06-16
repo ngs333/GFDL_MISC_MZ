@@ -1,7 +1,7 @@
 contents
 
 NOTES: a) egc below means "equidistant gnomonic cubic".
-       b) The ebc name prefixes mentioned below are C48, C172, C768, C3072.
+       b) The ebc name prefixes mentioned below are C48, C192, C768, C3072.
           The name prefix number is the same pattern without the "C".
        c) Regualr lat-lon grid name prefixes follow a pattern like 144x90.
           where the firs number is for the longitudes.

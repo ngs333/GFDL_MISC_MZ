@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "stdpartest.C": "cpp"
+    },
+    "cmake.configureOnOpen": true
+}
