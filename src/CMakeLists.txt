@@ -87,8 +87,9 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/../bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/../bin")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/../bin")
 
-add_subdirectory(cpp_execs)
-add_subdirectory(fortran_execs)
+add_subdirectory(c_src)
+add_subdirectory(cpp_src)
+add_subdirectory(fortran_src)
 
 #add_dependencies(fve_regll_gen.x FDS)
 

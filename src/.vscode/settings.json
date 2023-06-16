@@ -1,5 +1,6 @@
 {
     "files.associations": {
+        "*.fh": "FortranFreeForm",
         "stdpartest.C": "cpp"
     },
     "cmake.configureOnOpen": true
