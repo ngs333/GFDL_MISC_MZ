@@ -10,6 +10,9 @@
 
 add_executable(pass_array.x pass_array.C)
 
+add_executable(stdpartest.x stdpartest.C)
+
+
 
 
 
