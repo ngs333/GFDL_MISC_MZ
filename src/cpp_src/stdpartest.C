@@ -21,14 +21,15 @@ using namespace std;
 using namespace std::chrono;
 
 
-constexpr size_t NX{1000000};
+constexpr size_t NX{100000};
 constexpr int MAX_NN{100};
 constexpr int MAX_NNP{MAX_NN+1};
 constexpr int MAX_INT{std::numeric_limits<int>::max()};
 constexpr float max_distance {2.25};
 
 bool is_near(float x, float y){
-    if (sqrt((y-x)*(y-x)) <= max_distance){
+    if ((sqrt((y-x)*(y-x)) <= max_distance) && 
+    (cos(y-x)*cos(y-x)  + sin(y-x)* sin(y-x) <= 2.0)){
         return true;
     }else{
         return false;
@@ -138,7 +139,7 @@ void search_for_each(vector<float> &x, vector<float> &y, vector<array<int,MAX_NN
   assert(1 == 0); //TODO: unfinished - do not use. Alternative to copy_if?
   auto ints = std::views::iota(0, (int)x.size());
   auto NY = y.size();
-  std::for_each_n(std::execution::seq, 
+  std::for_each_n(std::execution::par_unseq, 
     ints.begin(), x.size(), [&, x = x.data(), y = y.data()](int i) {
         for(int j{0}; j< NY ; ++j){
          if(is_near(x[i], y[j])){ 
@@ -151,6 +152,8 @@ void search_for_each(vector<float> &x, vector<float> &y, vector<array<int,MAX_NN
         }
      });
 }
+
+
 int main(int argc, char *argv[]) {
   vector<float> x(NX, 0.), y(NX, 0.);  // allocation of same size and init
   vector<vector<int>> y_near_x_r1, y_near_x_r2;
@@ -179,7 +182,6 @@ int main(int argc, char *argv[]) {
   //print_results(y_near_x_r2);
 
   compare_results(y_near_x_r1, y_near_x_r2);
-
 }
 
 

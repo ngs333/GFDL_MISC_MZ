@@ -1,7 +1,8 @@
 {
     "files.associations": {
         "*.fh": "FortranFreeForm",
-        "stdpartest.C": "cpp"
+        "stdpartest.C": "cpp",
+        "vector": "cpp"
     },
     "cmake.configureOnOpen": true,
     "C_Cpp.clang_format_fallbackStyle": "{ BasedOnStyle: Google, IndentWidth: 2, ColumnLimit: 0}"
