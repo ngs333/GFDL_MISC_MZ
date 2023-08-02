@@ -18,7 +18,7 @@
                 "${workspaceFolder}/**"
             ],
             "defines": [],
-            "compilerPath": "/opt/nvidia/hpc_sdk/Linux_x86_64/23.5/compilers/bin/nvc++",
+            "compilerPath": "/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/compilers/bin/nvc++",
             "cStandard": "c17",
             "cppStandard": "c++20",
             "intelliSenseMode": "linux-clang-x64",

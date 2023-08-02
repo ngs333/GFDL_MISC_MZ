@@ -5,16 +5,17 @@ project(gfdl_misc
   LANGUAGES CXX C Fortran)
 
 #NOTE: this will not overrride the arg set in CXXFLAGS for -std
-set(CMAKE_CXX_STANDARD 23)
+#set(CMAKE_CXX_STANDARD 20) #adds gnu c++ 20 std ?
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
+
+message("CMAKE_SOURCE_DIR IS:  ${CMAKE_SOURCE_DIR}")
 
 include(GNUInstallDirs)
 
 #Location of some libs is external to this project.
 include_directories(/home/mzuniga/NetCdCPP/install/include)
 link_directories(/home/mzuniga/NetCdCPP/install/lib)
-
 
 # Build options
 option(OPENMP    "Build with OpenMP support" ON)
@@ -51,7 +52,7 @@ message ("** CMAKE_CXX_FLAGS :  ${CMAKE_CXX_FLAGS} ")
 
 
 # MPI Find dependencies
-find_package(MPI REQUIRED COMPONENTS C Fortran)
+##find_package(MPI REQUIRED COMPONENTS C Fortran C++)
 find_package(MPI REQUIRED)
 include_directories(${MPI_Fortran_INCLUDE_PATH})
 link_directories(${MPI_Fortran_LIBRARIES})
@@ -84,6 +85,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/../bin")
 add_subdirectory(c_src)
 add_subdirectory(cpp_src)
 add_subdirectory(fortran_src)
+##add_subdirectory(cpp_src/common)
+
 
 #add_dependencies(fve_regll_gen.x FDS)
 

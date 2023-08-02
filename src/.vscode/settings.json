@@ -2,7 +2,11 @@
     "files.associations": {
         "*.fh": "FortranFreeForm",
         "stdpartest.C": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "cart_prod.C": "cpp",
+        "pass_array.C": "cpp",
+        "ranges": "cpp",
+        "test_mdspan.C": "cpp"
     },
     "cmake.configureOnOpen": true,
     "C_Cpp.clang_format_fallbackStyle": "{ BasedOnStyle: Google, IndentWidth: 2, ColumnLimit: 0}"
