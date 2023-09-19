@@ -1,5 +1,5 @@
 # The first argument is the common name size of the grid e.g. 48 for a C48
-source  ./fregrid_gpu_test_util.sh
+source  ../TestCommon/fregrid_gpu_test_util.sh
 
 S0=$1
 SA=$(expr $S0 + $S0)
