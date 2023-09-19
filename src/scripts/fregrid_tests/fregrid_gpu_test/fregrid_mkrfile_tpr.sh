@@ -8,18 +8,25 @@ source  ./fregrid_gpu_test_util.sh
 TPN=$1
 NLAT=$2
 NLON=$3
-TGS=$2"x"$3
-
-echo "source/input tripolar grid name prefix :" $TPN
-echo "target/output mosaic size:" $TGS
 
 MS=$(get_tripolar_mosaic_name $TPN)
 MT=$(get_rll_mosaic_name $NLAT $NLON)
+MSF=$MS".nc"
+MTF=$MT".nc"
 
-RFN="remap_TP"$TPN"_R"$TGS".nc"
+RFN="remap_TP_"$TPN"_x_R"$NLAT"x"$NLON".nc"
 
+echo "source mosaic :"$MSF
+echo "target mosaic :"$MTF
 echo "remap file name:" $RFN
 
-source fregrid_mkrfile.sh $MS $MT $RFN
+start=`date +%s`
+
+fregrid --input_mosaic $MSF --output_mosaic $MTF \
+	--remap_file $RFN --interp_method conserve_order1
+
+end=`date +%s`
+runtime=$((end-start))
+echo "fregrid "$RF" time: " $runtime
 
 
