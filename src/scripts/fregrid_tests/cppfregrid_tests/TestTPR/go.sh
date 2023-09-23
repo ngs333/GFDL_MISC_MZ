@@ -1,1 +1,1 @@
-source fregrid_mkrfile_tpr.sh ocean 180 360
+../TestCommon/fregrid_mkrfile_tpr.sh ocean 180 360
