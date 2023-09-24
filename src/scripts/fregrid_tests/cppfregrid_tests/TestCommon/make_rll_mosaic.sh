@@ -2,8 +2,7 @@
 #First arguemnt is the nummber of latittudes; second is
 # the number of longitudes. The supergrid is 2X larger in each dim.
 
-source  ./fregrid_gpu_test_util.sh
-
+source  ../TestCommon/fregrid_gpu_test_util.sh
 
 NLAT=$1
 NLON=$2

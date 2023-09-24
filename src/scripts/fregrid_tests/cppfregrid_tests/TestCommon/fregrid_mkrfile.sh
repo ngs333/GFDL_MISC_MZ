@@ -35,12 +35,13 @@ if [ -f "$RF" ] ; then
     rm "$RF"
 fi
 
-start=`date +%s`
+start=`date +%s%N | cut -b1-13`
 
-fregrid --input_mosaic $MSF --output_mosaic $MTF \
+fregrid.x --input_mosaic $MSF --output_mosaic $MTF \
 	--remap_file $RF --interp_method $CIM
 
-end=`date +%s`
-runtime=$((end-start))
+end=`date +%s%N | cut -b1-13`
+dtime=$((end-start))
+runtime=$(bc <<< "scale=2; $dtime / 1000")
 echo "fregrid "$RF" time: " $runtime
 
