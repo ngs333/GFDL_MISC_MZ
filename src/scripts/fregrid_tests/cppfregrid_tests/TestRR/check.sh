@@ -1,1 +1,1 @@
-../TestCommon/test_o1.sh
+../TestCommon/test_o1.sh $1

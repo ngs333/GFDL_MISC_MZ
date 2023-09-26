@@ -1,3 +1,3 @@
-../TestCommon/check_o2.sh
+../TestCommon/check_o2.sh $1
 
 
