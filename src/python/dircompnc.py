@@ -24,7 +24,13 @@ def comp_with_fatts(d1, d2):
 #Compare the netcdf files among the two directories using GFDL's (Remiks) nccmp utility
 def comp_with_nccmp (d1, d2):
     extension_nc = '.nc'
-    cmpCommand = 'nccmp'
+
+    # Fields of make_hgrid output: x,y,dx,dy,angle_dx,angle_dy,arcx,area
+    #other_args = ' --variable=angle_dx,angle_dy --tolerance=1.0e-8 '
+    #other_args = ' --variable=x,y,dx,dy,arcx,area '
+    #other_args = ' --variable=area --Tolerance=1.0e-6 '
+    other_args = ' '
+    finCommand = 'nccmp -df --var-diff-count=5 ' + other_args  
 
     # Create a list of all the files with the specified extension
     nc_files = [f for f in os.listdir(d1) if f.endswith(extension_nc)]
@@ -40,18 +46,6 @@ def comp_with_nccmp (d1, d2):
         print("-------------------------")
         print("Starting nccmp compare of " + nc_name)
 
-        ##nccmp -d only prints first diff in file; -df prints more'
-        # Fields of make_hgrid output: x,y,dx,dy,angle_dx,angle_dy,arcx,area
-        #other_args = ' --variable=angle_dx,angle_dy --tolerance=1.0e-8 '
-        other_args = ' --variable=x,y,dx,dy,arcx,area '
-        other_args = ' --variable=x,y --tolerance=1.0e-10 '
-        #other_args = ' --variable=dx,dy --tolerance=1.0e-6 '
-        #other_args = ' --variable=area --Tolerance=1.0e-6 '
-        #other_args = ' --variable=arcx --tolerance=1.0e-14 '
-        #other_args = ' --variable=angle_dx,angle_dy --tolerance=1.0e-8 '
-        other_args = ' '
-        finCommand = cmpCommand + ' -df ' + other_args  
-        
         p = sp.Popen(finCommand +  f1 + ' ' + f2 , stdout=sp.PIPE, shell=True)
         (output, err) = p.communicate()
         p_status = p.wait()
