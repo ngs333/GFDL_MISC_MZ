@@ -10,6 +10,9 @@ import subprocess as sp
 from os import path
 import argparse
 
+files_failed = 0
+files_compared = 0
+
 
 #Compare two directories using the python filecpm.dircmp facility
 def comp_with_fatts(d1, d2):
@@ -23,6 +26,9 @@ def comp_with_fatts(d1, d2):
 
 #Compare the netcdf files among the two directories using GFDL's (Remiks) nccmp utility
 def comp_with_nccmp (d1, d2):
+    global files_failed
+    global files_compared
+    
     extension_nc = '.nc'
 
     # Fields of make_hgrid output: x,y,dx,dy,angle_dx,angle_dy,arcx,area
@@ -63,6 +69,9 @@ def comp_with_nccmp (d1, d2):
     print("-----------------------------")
 
 
+    files_compared += fcount
+    files_failed += dcount
+
 #Compare the netcdf files among all corresponding subdirectories of the
 # the two directories using GFDL's (Remiks) nccmp utility
 def comp_with_nccmp_subdirs (d1, d2):
@@ -80,6 +89,7 @@ def comp_with_nccmp_subdirs (d1, d2):
         comp_with_nccmp(d1 + '/' + element, d2 + '/' + element)
 
     print("[total files compared, total files differing]: [" + str(files_compared) + ", " + str(files_failed) +"]")
+
 
 if __name__ == '__main__':
 
